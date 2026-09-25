@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  h1, h2, h3, h4 {
+    @apply font-display text-navy-900;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  :focus-visible {
+    outline: 2px solid theme(colors.ice.500);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Blueprint-style corner brackets, framing hero/feature imagery - ties the
+     visual language back to a technical/engineering drawing. */
+  .blueprint-frame {
+    position: relative;
+  }
+  .blueprint-frame::before,
+  .blueprint-frame::after {
+    content: "";
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border: 2px solid theme(colors.ice.400);
+    pointer-events: none;
+  }
+  .blueprint-frame::before {
+    top: -8px;
+    left: -8px;
+    border-right: none;
+    border-bottom: none;
+  }
+  .blueprint-frame::after {
+    bottom: -8px;
+    right: -8px;
+    border-left: none;
+    border-top: none;
+  }
+
+  .container-page {
+    @apply mx-auto max-w-content px-5 sm:px-8;
+  }
+
+  .input {
+    @apply w-full border border-silver-300 px-3.5 py-2.5 text-sm bg-white focus:border-blue-600 focus:outline-none transition-colors;
+  }
+}
