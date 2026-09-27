@@ -11,6 +11,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <HelmetProvider>
       <BrowserRouter>
         <App />
+        <SpeedInsights />
       </BrowserRouter>
     </HelmetProvider>
   </React.StrictMode>
