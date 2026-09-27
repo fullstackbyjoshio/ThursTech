@@ -8,9 +8,10 @@ const DEFAULT_OG_IMAGE = "/og-image.jpg"; // replace with the real 1200x630 bran
  * Twitter card. Pass `path` (e.g. "/services/ac-repair") so canonical and
  * og:url are correct for that page, never the homepage.
  */
-export default function Seo({ title, description, path = "/", image, type = "website" }) {
+export default function Seo({ title, description, path = "/", image, type = "website", schema }) {
   const url = `https://www.thurstech.com.ng${path}`;
   const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
+  const schemaJson = schema ? JSON.stringify(schema).replace(/</g, "\\u003c") : null;
 
   return (
     <Helmet>
@@ -29,6 +30,7 @@ export default function Seo({ title, description, path = "/", image, type = "web
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image || DEFAULT_OG_IMAGE} />
+      {schemaJson && <script type="application/ld+json">{schemaJson}</script>}
     </Helmet>
   );
 }

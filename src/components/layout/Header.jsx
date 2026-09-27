@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
 import { ChevronDown, Menu, X, Phone } from "lucide-react";
 import { primaryNav, quoteNav } from "../../data/navigation";
 import { business } from "../../data/business";
-import Button from "../ui/Button";
+import PrefetchLink from "../ui/PrefetchLink";
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -12,9 +11,9 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 bg-navy-900 text-white">
       <div className="container-page flex items-center justify-between h-16">
-        <Link to="/" className="font-display font-extrabold text-xl tracking-tight">
+        <PrefetchLink to="/" className="font-display font-extrabold text-xl tracking-tight">
           THURSTECH
-        </Link>
+        </PrefetchLink>
 
         <nav className="hidden lg:flex items-center gap-7">
           {primaryNav.map((item) =>
@@ -33,22 +32,24 @@ export default function Header() {
                   <div className="absolute left-0 top-full pt-3 w-56">
                     <div className="bg-white text-navy-900 shadow-lg border border-silver-200 rounded-sm py-2">
                       {item.children.map((child) => (
-                        <NavLink
+                        <PrefetchLink
                           key={child.to}
                           to={child.to}
+                          navLink
                           className="block px-4 py-2.5 text-sm hover:bg-silver-100"
                         >
                           {child.label}
-                        </NavLink>
+                        </PrefetchLink>
                       ))}
                     </div>
                   </div>
                 )}
               </div>
             ) : (
-              <NavLink
+              <PrefetchLink
                 key={item.to}
                 to={item.to}
+                navLink
                 className={({ isActive }) =>
                   `text-sm font-medium transition-colors hover:text-ice-300 ${
                     isActive ? "text-ice-300" : ""
@@ -56,7 +57,7 @@ export default function Header() {
                 }
               >
                 {item.label}
-              </NavLink>
+              </PrefetchLink>
             )
           )}
         </nav>
@@ -69,9 +70,9 @@ export default function Header() {
             <Phone size={16} />
             {business.phones[0]}
           </a>
-          <Button to={quoteNav.to} variant="primary">
+          <PrefetchLink to={quoteNav.to} className="inline-flex items-center justify-center gap-2 bg-blue-600 px-5 py-3 text-sm font-semibold tracking-wide transition-colors hover:bg-blue-700">
             {quoteNav.label}
-          </Button>
+          </PrefetchLink>
         </div>
 
         <button
@@ -95,35 +96,35 @@ export default function Header() {
                   </summary>
                   <div className="pl-3 flex flex-col">
                     {item.children.map((child) => (
-                      <Link
+                      <PrefetchLink
                         key={child.to}
                         to={child.to}
                         className="py-2 text-sm text-silver-300"
                         onClick={() => setMobileOpen(false)}
                       >
                         {child.label}
-                      </Link>
+                      </PrefetchLink>
                     ))}
                   </div>
                 </details>
               ) : (
-                <Link
+                <PrefetchLink
                   key={item.to}
                   to={item.to}
                   className="py-2.5 text-sm font-medium"
                   onClick={() => setMobileOpen(false)}
                 >
                   {item.label}
-                </Link>
+                </PrefetchLink>
               )
             )}
-            <Link
+            <PrefetchLink
               to={quoteNav.to}
-              className="mt-2 bg-blue-600 text-white text-center py-3 text-sm font-semibold"
+              className="mt-2 bg-blue-600 text-white text-center py-3 text-sm font-semibold hover:bg-blue-700"
               onClick={() => setMobileOpen(false)}
             >
               {quoteNav.label}
-            </Link>
+            </PrefetchLink>
           </nav>
         </div>
       )}

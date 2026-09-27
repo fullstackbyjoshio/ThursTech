@@ -2,4 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://www.thurstech.com.ng/sitemap.xml
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://thurstech.vercel.app/sitemap.xml

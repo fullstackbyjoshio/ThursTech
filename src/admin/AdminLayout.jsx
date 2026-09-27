@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { LayoutDashboard, FileText, Wrench, Settings2, Users, Package, FolderKanban, Star, HelpCircle, SlidersHorizontal, LogOut } from "lucide-react";
+import { ToastViewport } from "../components/ui/Toast";
 import { supabase } from "../lib/supabaseClient";
 
 const links = [
@@ -25,6 +26,7 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen flex bg-silver-100">
+      <ToastViewport />
       <aside className="w-60 shrink-0 bg-navy-900 text-white flex flex-col">
         <div className="px-5 py-5 font-display font-extrabold text-lg border-b border-navy-700">THURSTECH</div>
         <nav className="flex-1 py-3">

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 import Seo from "../components/ui/Seo";
+import OptimizedImage from "../components/ui/OptimizedImage";
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -45,7 +46,7 @@ export default function ProjectDetail() {
         <p className="text-sm text-navy-700/60 mb-8">{project.location}</p>
 
         {project.cover_image && (
-          <img src={project.cover_image} alt={project.title} className="w-full aspect-video object-cover mb-8" />
+          <OptimizedImage src={project.cover_image} alt={project.title} width={1200} height={675} loading="eager" fetchPriority="high" decoding="async" frameClassName="w-full mb-8" />
         )}
 
         {project.description && <p className="text-navy-700/80 leading-relaxed mb-8">{project.description}</p>}
@@ -53,7 +54,7 @@ export default function ProjectDetail() {
         {gallery.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {gallery.map((src, i) => (
-              <img key={i} src={src} alt={`${project.title} photo ${i + 1}`} className="aspect-square object-cover" loading="lazy" />
+              <OptimizedImage key={i} src={src} alt={`${project.title} photo ${i + 1}`} width={800} height={800} />
             ))}
           </div>
         )}

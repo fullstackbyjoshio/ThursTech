@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { toast } from "../components/ui/Toast";
 import StatusBadge from "../components/ui/StatusBadge";
 
 /**
@@ -14,20 +15,33 @@ export default function Customers() {
 
   useEffect(() => {
     async function load() {
-      const [quotes, repairs, servicesRes] = await Promise.all([
-        supabase.from("quote_requests").select("*"),
-        supabase.from("repair_requests").select("*"),
-        supabase.from("service_requests").select("*"),
-      ]);
+      try {
+        const [quoteResult, repairResult, serviceResult] = await Promise.all([
+          supabase.from("quote_requests").select("*"),
+          supabase.from("repair_requests").select("*"),
+          supabase.from("service_requests").select("*"),
+        ]);
+        const { data: quoteData, error: quoteError } = quoteResult;
+        const { data: repairData, error: repairError } = repairResult;
+        const { data: serviceData, error: serviceError } = serviceResult;
 
-      const merged = [
-        ...(quotes.data || []).map((r) => ({ ...r, source: "Quote Request", request: r.service_type })),
-        ...(repairs.data || []).map((r) => ({ ...r, source: "Repair Request", request: r.problem })),
-        ...(servicesRes.data || []).map((r) => ({ ...r, source: "Service Request", request: r.service_type })),
-      ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        const errors = [quoteError, repairError, serviceError].filter(Boolean);
+        errors.forEach((error) => console.error("Failed to load customer requests:", error));
+        if (errors.length) toast.error(`Operation failed: ${errors[0].message}`);
 
-      setRows(merged);
-      setLoading(false);
+        const merged = [
+          ...(quoteData || []).map((r) => ({ ...r, source: "Quote Request", request: r.service_type })),
+          ...(repairData || []).map((r) => ({ ...r, source: "Repair Request", request: r.problem })),
+          ...(serviceData || []).map((r) => ({ ...r, source: "Service Request", request: r.service_type })),
+        ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+        setRows(merged);
+      } catch (error) {
+        console.error("Failed to load customer requests:", error);
+        toast.error(`Operation failed: ${error.message}`);
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, []);

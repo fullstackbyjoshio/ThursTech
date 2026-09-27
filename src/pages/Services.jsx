@@ -1,16 +1,17 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import Seo from "../components/ui/Seo";
+import SEO, { localBusinessJsonLd } from "../components/SEO";
 import SectionHeading from "../components/ui/SectionHeading";
 import { services } from "../data/services";
 
 export default function Services() {
   return (
     <>
-      <Seo
+      <SEO
         title="AC Services | THURSTECH Nigeria Limited"
         description="Air conditioner installation, repair, servicing, maintenance, relocation and commercial HVAC services from THURSTECH Nigeria Limited."
-        path="/services"
+        canonical="/services"
+        jsonLd={localBusinessJsonLd}
       />
       <section className="container-page py-16 sm:py-20">
         <SectionHeading eyebrow="Services" title="What We Do" description="Sales, installation, repair and servicing, covered end to end." />

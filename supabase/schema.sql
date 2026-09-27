@@ -125,6 +125,9 @@ create table if not exists public.products (
   updated_at timestamptz not null default now()
 );
 
+alter table public.products
+  add column if not exists images jsonb not null default '[]'::jsonb;
+
 -- ---------------------------------------------------------------------------
 -- projects: real, completed work with before/during/after photos
 -- ---------------------------------------------------------------------------

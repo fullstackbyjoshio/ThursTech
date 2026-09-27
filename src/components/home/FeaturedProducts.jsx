@@ -4,6 +4,7 @@ import { supabase } from "../../lib/supabaseClient";
 import SectionHeading from "../ui/SectionHeading";
 import EmptyState from "../ui/EmptyState";
 import Button from "../ui/Button";
+import OptimizedImage from "../ui/OptimizedImage";
 
 /**
  * Pulls real featured products from Supabase. Shows an honest empty state
@@ -56,7 +57,7 @@ export default function FeaturedProducts() {
             <Link key={p.id} to={`/shop/${p.id}`} className="border border-silver-200 hover:border-blue-600 transition-colors">
               <div className="aspect-square bg-silver-100 flex items-center justify-center overflow-hidden">
                 {p.image_url ? (
-                  <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" loading="lazy" />
+                  <OptimizedImage src={p.image_url} alt={p.name} width={800} height={800} className="w-full h-full object-cover" frameClassName="w-full h-full" />
                 ) : (
                   <span className="text-xs text-navy-700/40">No image</span>
                 )}

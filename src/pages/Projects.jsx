@@ -4,6 +4,8 @@ import { supabase } from "../lib/supabaseClient";
 import Seo from "../components/ui/Seo";
 import SectionHeading from "../components/ui/SectionHeading";
 import EmptyState from "../components/ui/EmptyState";
+import OptimizedImage from "../components/ui/OptimizedImage";
+import { ProjectCardSkeleton } from "../components/ui/Skeleton";
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
@@ -36,7 +38,9 @@ export default function Projects() {
 
         <div className="mt-10">
           {loading ? (
-            <p className="text-sm text-navy-700/50">Loading projects...</p>
+            <div role="status" aria-label="Loading projects" className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }, (_, index) => <ProjectCardSkeleton key={index} />)}
+            </div>
           ) : projects.length === 0 ? (
             <EmptyState
               title="Project gallery coming soon"
@@ -48,7 +52,7 @@ export default function Projects() {
                 <Link key={p.id} to={`/projects/${p.id}`} className="border border-silver-200 hover:border-blue-600 transition-colors">
                   <div className="aspect-video bg-silver-100 flex items-center justify-center overflow-hidden">
                     {p.cover_image ? (
-                      <img src={p.cover_image} alt={p.title} className="w-full h-full object-cover" loading="lazy" />
+                      <OptimizedImage src={p.cover_image} alt={p.title} width={800} height={800} className="w-full h-full object-cover" frameClassName="w-full h-full" />
                     ) : (
                       <span className="text-xs text-navy-700/40">No image</span>
                     )}

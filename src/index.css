@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes fade-spin {
+  0% { opacity: 1; }
+  100% { opacity: 0.15; }
+}
+
+.animate-fade-spin {
+  animation: fade-spin 1.2s linear infinite;
+}
+
 @layer base {
   h1, h2, h3, h4 {
     @apply font-display text-navy-900;

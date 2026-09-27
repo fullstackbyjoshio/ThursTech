@@ -4,6 +4,8 @@ import { supabase } from "../lib/supabaseClient";
 import Seo from "../components/ui/Seo";
 import Button from "../components/ui/Button";
 import WhatsAppLink from "../components/ui/WhatsAppLink";
+import OptimizedImage from "../components/ui/OptimizedImage";
+import { ProductDetailSkeleton } from "../components/ui/Skeleton";
 import { whatsappTemplates } from "../lib/whatsapp";
 
 export default function ProductDetail() {
@@ -26,7 +28,7 @@ export default function ProductDetail() {
     };
   }, [id]);
 
-  if (loading) return <div className="container-page py-20 text-sm text-navy-700/50">Loading...</div>;
+  if (loading) return <ProductDetailSkeleton />;
 
   if (!product) {
     return (
@@ -38,6 +40,29 @@ export default function ProductDetail() {
   }
 
   const productName = `${product.brand || ""} ${product.name || ""}`.trim();
+  const productSchema = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    name: productName,
+    image: product.image_url ? [product.image_url] : [],
+    description: product.description || `${productName} from THURSTECH Nigeria Limited.`,
+    brand: {
+      "@type": "Brand",
+      name: product.brand || "THURSTECH",
+    },
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "NGN",
+      price: product.price || "0",
+      availability: product.availability === "In Stock"
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      seller: {
+        "@type": "Organization",
+        name: "THURSTECH Nigeria Limited",
+      },
+    },
+  };
   const specs = [
     ["Brand", product.brand],
     ["Model", product.model],
@@ -58,11 +83,12 @@ export default function ProductDetail() {
         path={`/shop/${product.id}`}
         image={product.image_url}
         type="product"
+        schema={productSchema}
       />
       <section className="container-page py-12 sm:py-16 grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div className="aspect-square bg-silver-100 flex items-center justify-center overflow-hidden">
           {product.image_url ? (
-            <img src={product.image_url} alt={productName} className="w-full h-full object-cover" />
+            <OptimizedImage src={product.image_url} alt={productName} width={1000} height={1000} loading="eager" fetchPriority="high" decoding="async" frameClassName="w-full h-full" />
           ) : (
             <span className="text-sm text-navy-700/40">No image available</span>
           )}

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
-import Seo from "../components/ui/Seo";
+import SEO, { localBusinessJsonLd } from "../components/SEO";
 import SectionHeading from "../components/ui/SectionHeading";
 import EmptyState from "../components/ui/EmptyState";
+import OptimizedImage from "../components/ui/OptimizedImage";
 
 const CATEGORIES = ["All", "Split AC", "Inverter AC", "Non-Inverter AC", "Floor Standing AC", "Cassette AC"];
 
@@ -32,10 +33,11 @@ export default function Shop() {
 
   return (
     <>
-      <Seo
+      <SEO
         title="Air Conditioners for Sale in Nigeria | THURSTECH"
         description="Browse air conditioners from THURSTECH Nigeria Limited. Enquire about available models, capacities, pricing, installation and support."
-        path="/shop"
+        canonical="/shop"
+        jsonLd={localBusinessJsonLd}
       />
       <section className="container-page py-16 sm:py-20">
         <SectionHeading eyebrow="Shop AC" title="Air Conditioners" description="Browse available models. Prices and availability are kept up to date by our team." />
@@ -68,7 +70,7 @@ export default function Shop() {
                 <Link key={p.id} to={`/shop/${p.id}`} className="border border-silver-200 hover:border-blue-600 transition-colors">
                   <div className="aspect-square bg-silver-100 flex items-center justify-center overflow-hidden">
                     {p.image_url ? (
-                      <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" loading="lazy" />
+                      <OptimizedImage src={p.image_url} alt={p.name} width={800} height={800} className="w-full h-full object-cover" frameClassName="w-full h-full" />
                     ) : (
                       <span className="text-xs text-navy-700/40">No image</span>
                     )}

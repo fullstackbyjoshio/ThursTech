@@ -1,30 +1,63 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { toast } from "../components/ui/Toast";
+import Button from "../components/ui/button-1";
+import HoldActionButton from "../components/ui/HoldActionButton";
 import { Plus, Trash2, X } from "lucide-react";
 
 export default function FAQs() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+  const [updatingId, setUpdatingId] = useState(null);
 
   async function load() {
     setLoading(true);
-    const { data, error } = await supabase.from("faqs").select("*").order("sort_order", { ascending: true });
-    if (!error && data) setItems(data);
-    setLoading(false);
+    try {
+      const { data, error } = await supabase.from("faqs").select("*").order("sort_order", { ascending: true });
+      if (error) throw error;
+      if (data) setItems(data);
+    } catch (error) {
+      console.error("Failed to load FAQs:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => { load(); }, []);
 
   async function togglePublished(item) {
-    await supabase.from("faqs").update({ published: !item.published }).eq("id", item.id);
-    load();
+    setUpdatingId(item.id);
+    try {
+      const { data, error } = await supabase.from("faqs").update({ published: !item.published }).eq("id", item.id).select("id").maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("FAQ was not found or could not be updated.");
+      toast.success("Item updated successfully!");
+      await load();
+    } catch (error) {
+      console.error("Failed to update FAQ:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setUpdatingId(null);
+    }
   }
 
   async function remove(id) {
-    if (!window.confirm("Delete this FAQ?")) return;
-    await supabase.from("faqs").delete().eq("id", id);
-    load();
+    setDeletingId(id);
+    try {
+      const { data, error } = await supabase.from("faqs").delete().eq("id", id).select("id").maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("FAQ was not found or could not be deleted.");
+      toast.success("Item deleted successfully!");
+      await load();
+    } catch (error) {
+      console.error("Failed to delete FAQ:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   return (
@@ -52,10 +85,10 @@ export default function FAQs() {
                 <p className="text-sm text-navy-700/60 mt-1">{f.answer}</p>
               </div>
               <div className="flex flex-col items-end gap-2 shrink-0">
-                <button onClick={() => togglePublished(f)} className={`text-xs px-2 py-1 border ${f.published ? "bg-green-50 border-green-600 text-green-700" : "border-silver-300 text-navy-700/50"}`}>
+                <button disabled={updatingId === f.id} onClick={() => togglePublished(f)} className={`text-xs px-2 py-1 border disabled:opacity-50 ${f.published ? "bg-green-50 border-green-600 text-green-700" : "border-silver-300 text-navy-700/50"}`}>
                   {f.published ? "Published" : "Draft"}
                 </button>
-                <button onClick={() => remove(f.id)} className="text-navy-700/40 hover:text-red-600"><Trash2 size={15} /></button>
+                <HoldActionButton loading={deletingId === f.id} disabled={Boolean(deletingId)} onConfirm={() => remove(f.id)} className="!p-1 !text-navy-700/40 hover:!text-red-600" aria-label="Hold to delete FAQ"><Trash2 size={15} /></HoldActionButton>
               </div>
             </div>
           ))}
@@ -69,14 +102,23 @@ export default function FAQs() {
 
 function FaqForm({ onClose, onSaved, nextOrder }) {
   const [form, setForm] = useState({ question: "", answer: "", category: "", published: true, sort_order: nextOrder });
-  const [saving, setSaving] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setSaving(true);
-    await supabase.from("faqs").insert([form]);
-    setSaving(false);
-    onSaved();
+    setIsSubmitting(true);
+    try {
+      const { data, error } = await supabase.from("faqs").insert([form]).select("id").single();
+      if (error) throw error;
+      if (!data) throw new Error("No FAQ was returned after saving.");
+      toast.success("Item created successfully!");
+      onSaved();
+    } catch (error) {
+      console.error("Failed to create FAQ:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -94,9 +136,7 @@ function FaqForm({ onClose, onSaved, nextOrder }) {
           <span className="block text-sm font-medium text-navy-800 mb-1.5">Answer</span>
           <textarea required rows={3} className="input" value={form.answer} onChange={(e) => setForm((f) => ({ ...f, answer: e.target.value }))} />
         </label>
-        <button type="submit" disabled={saving} className="w-full bg-blue-600 text-white py-2.5 text-sm font-semibold hover:bg-blue-700 disabled:opacity-60">
-          {saving ? "Saving..." : "Save FAQ"}
-        </button>
+        <Button type="submit" loading={isSubmitting} className="w-full">Save FAQ</Button>
       </form>
     </div>
   );

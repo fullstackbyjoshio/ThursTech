@@ -1,30 +1,64 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { toast } from "../components/ui/Toast";
+import Button from "../components/ui/button-1";
+import HoldActionButton from "../components/ui/HoldActionButton";
+import Skeleton from "../components/ui/Skeleton";
 import { Plus, Trash2, X } from "lucide-react";
 
 export default function Testimonials() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+  const [updatingId, setUpdatingId] = useState(null);
 
   async function load() {
     setLoading(true);
-    const { data, error } = await supabase.from("testimonials").select("*").order("created_at", { ascending: false });
-    if (!error && data) setItems(data);
-    setLoading(false);
+    try {
+      const { data, error } = await supabase.from("testimonials").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      if (data) setItems(data);
+    } catch (error) {
+      console.error("Failed to load testimonials:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => { load(); }, []);
 
   async function toggle(item, field) {
-    await supabase.from("testimonials").update({ [field]: !item[field] }).eq("id", item.id);
-    load();
+    setUpdatingId(item.id);
+    try {
+      const { data, error } = await supabase.from("testimonials").update({ [field]: !item[field] }).eq("id", item.id).select("id").maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("Testimonial was not found or could not be updated.");
+      toast.success("Item updated successfully!");
+      await load();
+    } catch (error) {
+      console.error("Failed to update testimonial:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setUpdatingId(null);
+    }
   }
 
   async function remove(id) {
-    if (!window.confirm("Delete this testimonial?")) return;
-    await supabase.from("testimonials").delete().eq("id", id);
-    load();
+    setDeletingId(id);
+    try {
+      const { data, error } = await supabase.from("testimonials").delete().eq("id", id).select("id").maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("Testimonial was not found or could not be deleted.");
+      toast.success("Item deleted successfully!");
+      await load();
+    } catch (error) {
+      console.error("Failed to delete testimonial:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   return (
@@ -40,7 +74,21 @@ export default function Testimonials() {
       </div>
 
       {loading ? (
-        <p className="text-sm text-navy-700/50">Loading...</p>
+        <div role="status" aria-label="Loading testimonials" className="grid gap-4">
+          {Array.from({ length: 3 }, (_, index) => (
+            <div key={index} className="border border-silver-200 bg-white p-5">
+              <div className="flex items-start justify-between gap-4">
+                <div className="w-full space-y-3">
+                  <Skeleton className="h-4 w-1/3" />
+                  <Skeleton className="h-3 w-full" />
+                  <Skeleton className="h-3 w-5/6" />
+                </div>
+                <Skeleton className="h-7 w-7 shrink-0" />
+              </div>
+              <div className="mt-4 flex gap-2"><Skeleton className="h-6 w-24" /><Skeleton className="h-6 w-20" /></div>
+            </div>
+          ))}
+        </div>
       ) : items.length === 0 ? (
         <p className="text-sm text-navy-700/50 border border-dashed border-silver-300 p-8 text-center">No testimonials yet.</p>
       ) : (
@@ -52,13 +100,13 @@ export default function Testimonials() {
                   <p className="font-semibold text-sm">{t.customer_name} &bull; {"\u2605".repeat(t.rating || 0)}</p>
                   <p className="text-sm text-navy-700/70 mt-2 leading-relaxed">{t.review}</p>
                 </div>
-                <button onClick={() => remove(t.id)} className="text-navy-700/40 hover:text-red-600 shrink-0"><Trash2 size={15} /></button>
+                <HoldActionButton loading={deletingId === t.id} disabled={Boolean(deletingId)} onConfirm={() => remove(t.id)} className="!p-1 !text-navy-700/40 hover:!text-red-600 shrink-0" aria-label="Hold to delete testimonial"><Trash2 size={15} /></HoldActionButton>
               </div>
               <div className="flex gap-2 mt-3">
-                <button onClick={() => toggle(t, "approved")} className={`text-xs px-2 py-1 border ${t.approved ? "bg-green-50 border-green-600 text-green-700" : "border-silver-300 text-navy-700/50"}`}>
+                <button disabled={updatingId === t.id} onClick={() => toggle(t, "approved")} className={`text-xs px-2 py-1 border disabled:opacity-50 ${t.approved ? "bg-green-50 border-green-600 text-green-700" : "border-silver-300 text-navy-700/50"}`}>
                   {t.approved ? "Approved" : "Pending approval"}
                 </button>
-                <button onClick={() => toggle(t, "featured")} className={`text-xs px-2 py-1 border ${t.featured ? "bg-blue-50 border-blue-600 text-blue-700" : "border-silver-300 text-navy-700/50"}`}>
+                <button disabled={updatingId === t.id} onClick={() => toggle(t, "featured")} className={`text-xs px-2 py-1 border disabled:opacity-50 ${t.featured ? "bg-blue-50 border-blue-600 text-blue-700" : "border-silver-300 text-navy-700/50"}`}>
                   {t.featured ? "Featured" : "Not featured"}
                 </button>
               </div>
@@ -74,14 +122,23 @@ export default function Testimonials() {
 
 function TestimonialForm({ onClose, onSaved }) {
   const [form, setForm] = useState({ customer_name: "", review: "", rating: 5, approved: false, featured: false });
-  const [saving, setSaving] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setSaving(true);
-    await supabase.from("testimonials").insert([form]);
-    setSaving(false);
-    onSaved();
+    setIsSubmitting(true);
+    try {
+      const { data, error } = await supabase.from("testimonials").insert([form]).select("id").single();
+      if (error) throw error;
+      if (!data) throw new Error("No testimonial was returned after saving.");
+      toast.success("Item created successfully!");
+      onSaved();
+    } catch (error) {
+      console.error("Failed to create testimonial:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -103,9 +160,7 @@ function TestimonialForm({ onClose, onSaved }) {
           <span className="block text-sm font-medium text-navy-800 mb-1.5">Rating (1-5)</span>
           <input type="number" min={1} max={5} className="input" value={form.rating} onChange={(e) => setForm((f) => ({ ...f, rating: Number(e.target.value) }))} />
         </label>
-        <button type="submit" disabled={saving} className="w-full bg-blue-600 text-white py-2.5 text-sm font-semibold hover:bg-blue-700 disabled:opacity-60">
-          {saving ? "Saving..." : "Save Testimonial"}
-        </button>
+        <Button type="submit" loading={isSubmitting} className="w-full">Save Testimonial</Button>
       </form>
     </div>
   );

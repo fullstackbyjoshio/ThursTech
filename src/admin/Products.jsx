@@ -1,36 +1,70 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { toast } from "../components/ui/Toast";
+import Button from "../components/ui/button-1";
+import HoldActionButton from "../components/ui/HoldActionButton";
+import Skeleton from "../components/ui/Skeleton";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 
 const emptyProduct = {
   brand: "", name: "", model: "", category: "Split AC", capacity: "", type: "Inverter",
   refrigerant: "", voltage: "", description: "", specifications: "", price: "",
-  availability: "In Stock", warranty: "", image_url: "", featured: false, active: true,
+  availability: "In Stock", warranty: "", image_url: "", images: [], featured: false, active: true,
 };
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(null); // null | "new" | product object
+  const [deletingId, setDeletingId] = useState(null);
+  const [updatingId, setUpdatingId] = useState(null);
 
   async function load() {
     setLoading(true);
-    const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
-    if (!error && data) setProducts(data);
-    setLoading(false);
+    try {
+      const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      if (data) setProducts(data);
+    } catch (error) {
+      console.error("Failed to load products:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => { load(); }, []);
 
   async function remove(id) {
-    if (!window.confirm("Delete this product?")) return;
-    await supabase.from("products").delete().eq("id", id);
-    load();
+    setDeletingId(id);
+    try {
+      const { data, error } = await supabase.from("products").delete().eq("id", id).select("id").maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("Product was not found or could not be deleted.");
+      toast.success("Item deleted successfully!");
+      await load();
+    } catch (error) {
+      console.error("Failed to delete product:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   async function toggleField(product, field) {
-    await supabase.from("products").update({ [field]: !product[field] }).eq("id", product.id);
-    load();
+    setUpdatingId(product.id);
+    try {
+      const { data, error } = await supabase.from("products").update({ [field]: !product[field] }).eq("id", product.id).select("id").maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("Product was not found or could not be updated.");
+      toast.success("Item updated successfully!");
+      await load();
+    } catch (error) {
+      console.error("Failed to update product:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setUpdatingId(null);
+    }
   }
 
   return (
@@ -46,7 +80,17 @@ export default function Products() {
       </div>
 
       {loading ? (
-        <p className="text-sm text-navy-700/50">Loading...</p>
+        <div role="status" aria-label="Loading products" className="border border-silver-200 bg-white">
+          {Array.from({ length: 6 }, (_, index) => (
+            <div key={index} className="grid grid-cols-6 gap-4 border-b border-silver-200 px-4 py-4 last:border-b-0">
+              <div className="col-span-2 space-y-2"><Skeleton className="h-4 w-3/4" /><Skeleton className="h-3 w-1/2" /></div>
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-6 w-16" />
+              <Skeleton className="h-6 w-16" />
+            </div>
+          ))}
+        </div>
       ) : products.length === 0 ? (
         <p className="text-sm text-navy-700/50 border border-dashed border-silver-300 p-8 text-center">No products yet. Add your first AC unit.</p>
       ) : (
@@ -72,18 +116,18 @@ export default function Products() {
                   <td className="px-4 py-3">{p.category}</td>
                   <td className="px-4 py-3">{p.price ? `\u20a6${Number(p.price).toLocaleString()}` : "Request Price"}</td>
                   <td className="px-4 py-3">
-                    <button onClick={() => toggleField(p, "featured")} className={`text-xs px-2 py-1 border ${p.featured ? "bg-blue-50 border-blue-600 text-blue-700" : "border-silver-300 text-navy-700/50"}`}>
+                    <button disabled={updatingId === p.id} onClick={() => toggleField(p, "featured")} className={`text-xs px-2 py-1 border disabled:opacity-50 ${p.featured ? "bg-blue-50 border-blue-600 text-blue-700" : "border-silver-300 text-navy-700/50"}`}>
                       {p.featured ? "Featured" : "Not featured"}
                     </button>
                   </td>
                   <td className="px-4 py-3">
-                    <button onClick={() => toggleField(p, "active")} className={`text-xs px-2 py-1 border ${p.active ? "bg-green-50 border-green-600 text-green-700" : "border-silver-300 text-navy-700/50"}`}>
+                    <button disabled={updatingId === p.id} onClick={() => toggleField(p, "active")} className={`text-xs px-2 py-1 border disabled:opacity-50 ${p.active ? "bg-green-50 border-green-600 text-green-700" : "border-silver-300 text-navy-700/50"}`}>
                       {p.active ? "Published" : "Unpublished"}
                     </button>
                   </td>
                   <td className="px-4 py-3 flex gap-3">
                     <button onClick={() => setEditing(p)} className="text-navy-700/60 hover:text-blue-600"><Pencil size={15} /></button>
-                    <button onClick={() => remove(p.id)} className="text-navy-700/60 hover:text-red-600"><Trash2 size={15} /></button>
+                    <HoldActionButton loading={deletingId === p.id} disabled={Boolean(deletingId)} onConfirm={() => remove(p.id)} className="!p-1 !text-navy-700/60 hover:!text-red-600" aria-label="Hold to delete product"><Trash2 size={15} /></HoldActionButton>
                   </td>
                 </tr>
               ))}
@@ -104,27 +148,122 @@ export default function Products() {
 }
 
 function ProductForm({ initial, onClose, onSaved }) {
-  const [form, setForm] = useState(initial);
-  const [saving, setSaving] = useState(false);
+  // Ensure images array exists even when loading older products with only image_url
+  const initialImages = Array.isArray(initial.images) && initial.images.length > 0
+    ? initial.images
+    : initial.image_url ? [initial.image_url] : [];
+
+  const [form, setForm] = useState({ ...initial, images: initialImages });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
   }
 
+  // Handle uploading multiple image files (Up to 3 max)
+  async function handleImageUpload(e) {
+    try {
+      const selectedFiles = Array.from(e.target.files);
+      if (!selectedFiles.length) return;
+
+      const currentList = form.images || [];
+
+      if (currentList.length + selectedFiles.length > 3) {
+        toast.error(`You can only attach a maximum of 3 photos per product. You currently have ${currentList.length} photo(s).`);
+        e.target.value = ""; // Reset file input
+        return;
+      }
+
+      setUploading(true);
+      const uploadedUrls = [];
+
+      for (const file of selectedFiles) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `ac-units/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('products')
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data } = supabase.storage.from('products').getPublicUrl(filePath);
+        uploadedUrls.push(data.publicUrl);
+      }
+
+      const updatedImages = [...currentList, ...uploadedUrls];
+
+      setForm((f) => ({
+        ...f,
+        images: updatedImages,
+        image_url: updatedImages[0] || "", // First image serves as the main image_url
+      }));
+    } catch (error) {
+      console.error("Product image upload failed:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setUploading(false);
+      e.target.value = ""; // Reset input so user can choose again if needed
+    }
+  }
+
+  // Remove individual photo by index
+  function removeImage(indexToRemove) {
+    const updatedImages = form.images.filter((_, index) => index !== indexToRemove);
+    setForm((f) => ({
+      ...f,
+      images: updatedImages,
+      image_url: updatedImages[0] || "", // Update primary image URL to the new first photo
+    }));
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
-    setSaving(true);
-    const payload = { ...form, price: form.price ? Number(form.price) : null };
-    delete payload.created_at;
-    if (form.id) {
-      await supabase.from("products").update(payload).eq("id", form.id);
-    } else {
-      delete payload.id;
-      await supabase.from("products").insert([payload]);
+    setIsSubmitting(true);
+
+    try {
+      const images = Array.isArray(form.images)
+        ? form.images.filter((image) => typeof image === "string" && image.trim()).map((image) => image.trim())
+        : [];
+      const payload = {
+        ...form,
+        price: form.price ? Number(form.price) : null,
+        images,
+        image_url: images[0] || form.image_url || "",
+      };
+
+      delete payload.created_at;
+
+      let result;
+      if (form.id) {
+        result = await supabase
+          .from("products")
+          .update(payload)
+          .eq("id", form.id)
+          .select("id")
+          .maybeSingle();
+      } else {
+        delete payload.id;
+        result = await supabase.from("products").insert([payload]).select("id").single();
+      }
+
+      const { data, error } = result;
+      if (error) throw error;
+      if (!data) throw new Error("No product was returned after saving.");
+
+      toast.success("Product saved successfully!");
+      onSaved();
+    } catch (error) {
+      console.error("Failed to save product:", error);
+      toast.error(`Failed to save product: ${error.message || "Unknown error"}`);
+    } finally {
+      setIsSubmitting(false);
     }
-    setSaving(false);
-    onSaved();
   }
+
+  const currentImages = form.images || [];
 
   return (
     <div className="fixed inset-0 bg-navy-950/60 flex items-center justify-center p-4 z-50 overflow-y-auto">
@@ -148,7 +287,48 @@ function ProductForm({ initial, onClose, onSaved }) {
           <TextField label="Warranty" value={form.warranty} onChange={(v) => update("warranty", v)} />
           <SelectField label="Availability" value={form.availability} onChange={(v) => update("availability", v)}
             options={["In Stock", "Out of Stock", "Made to Order"]} />
-          <TextField label="Image URL" value={form.image_url} onChange={(v) => update("image_url", v)} />
+          
+          {/* Multi-File Upload Selector (Up to 3 Photos) */}
+          <div className="block">
+            <div className="flex justify-between items-center mb-1.5">
+              <span className="text-sm font-medium text-navy-800">Product Photos (Max 3)</span>
+              <span className="text-xs text-navy-700/60">{currentImages.length}/3 uploaded</span>
+            </div>
+            
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageUpload}
+              disabled={uploading || currentImages.length >= 3}
+              className="block w-full text-xs text-navy-700 file:mr-3 file:py-2 file:px-3 file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer border border-silver-300 p-1 disabled:opacity-50"
+            />
+            {uploading && <p className="text-xs text-blue-600 mt-1">Uploading photos...</p>}
+
+            {/* Thumbnail Previews Grid */}
+            {currentImages.length > 0 && (
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                {currentImages.map((url, idx) => (
+                  <div key={idx} className="relative group border rounded p-1 bg-silver-50">
+                    <img src={url} alt={`Product photo ${idx + 1}`} className="w-full h-16 object-cover rounded" />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(idx)}
+                      className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 shadow hover:bg-red-700 transition-colors"
+                      title="Remove image"
+                    >
+                      <X size={12} />
+                    </button>
+                    {idx === 0 && (
+                      <span className="absolute bottom-1 left-1 bg-navy-950/70 text-white text-[9px] px-1 rounded">
+                        Main
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <label className="block mt-4">
@@ -173,9 +353,7 @@ function ProductForm({ initial, onClose, onSaved }) {
         </div>
 
         <div className="flex gap-3 mt-8">
-          <button type="submit" disabled={saving} className="bg-blue-600 text-white px-6 py-2.5 text-sm font-semibold hover:bg-blue-700 disabled:opacity-60">
-            {saving ? "Saving..." : "Save Product"}
-          </button>
+          <Button loading={isSubmitting} disabled={uploading}>Save Product</Button>
           <button type="button" onClick={onClose} className="px-6 py-2.5 text-sm font-semibold text-navy-700/60">Cancel</button>
         </div>
       </form>

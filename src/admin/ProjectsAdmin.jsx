@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { toast } from "../components/ui/Toast";
+import Button from "../components/ui/button-1";
+import HoldActionButton from "../components/ui/HoldActionButton";
+import Skeleton from "../components/ui/Skeleton";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 
 const emptyProject = {
@@ -11,25 +15,55 @@ export default function ProjectsAdmin() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
+  const [updatingId, setUpdatingId] = useState(null);
 
   async function load() {
     setLoading(true);
-    const { data, error } = await supabase.from("projects").select("*").order("project_date", { ascending: false });
-    if (!error && data) setProjects(data);
-    setLoading(false);
+    try {
+      const { data, error } = await supabase.from("projects").select("*").order("project_date", { ascending: false });
+      if (error) throw error;
+      if (data) setProjects(data);
+    } catch (error) {
+      console.error("Failed to load projects:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => { load(); }, []);
 
   async function remove(id) {
-    if (!window.confirm("Delete this project?")) return;
-    await supabase.from("projects").delete().eq("id", id);
-    load();
+    setDeletingId(id);
+    try {
+      const { data, error } = await supabase.from("projects").delete().eq("id", id).select("id").maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("Project was not found or could not be deleted.");
+      toast.success("Item deleted successfully!");
+      await load();
+    } catch (error) {
+      console.error("Failed to delete project:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   async function toggleFeatured(p) {
-    await supabase.from("projects").update({ featured: !p.featured }).eq("id", p.id);
-    load();
+    setUpdatingId(p.id);
+    try {
+      const { data, error } = await supabase.from("projects").update({ featured: !p.featured }).eq("id", p.id).select("id").maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("Project was not found or could not be updated.");
+      toast.success("Item updated successfully!");
+      await load();
+    } catch (error) {
+      console.error("Failed to update project:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setUpdatingId(null);
+    }
   }
 
   return (
@@ -45,7 +79,17 @@ export default function ProjectsAdmin() {
       </div>
 
       {loading ? (
-        <p className="text-sm text-navy-700/50">Loading...</p>
+        <div role="status" aria-label="Loading projects" className="border border-silver-200 bg-white">
+          {Array.from({ length: 5 }, (_, index) => (
+            <div key={index} className="grid grid-cols-5 gap-4 border-b border-silver-200 px-4 py-4 last:border-b-0">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-2/3" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-6 w-16" />
+              <Skeleton className="h-6 w-12" />
+            </div>
+          ))}
+        </div>
       ) : projects.length === 0 ? (
         <p className="text-sm text-navy-700/50 border border-dashed border-silver-300 p-8 text-center">No projects yet. Add your first completed job.</p>
       ) : (
@@ -67,13 +111,13 @@ export default function ProjectsAdmin() {
                   <td className="px-4 py-3">{p.location}</td>
                   <td className="px-4 py-3">{p.service}</td>
                   <td className="px-4 py-3">
-                    <button onClick={() => toggleFeatured(p)} className={`text-xs px-2 py-1 border ${p.featured ? "bg-blue-50 border-blue-600 text-blue-700" : "border-silver-300 text-navy-700/50"}`}>
+                    <button disabled={updatingId === p.id} onClick={() => toggleFeatured(p)} className={`text-xs px-2 py-1 border disabled:opacity-50 ${p.featured ? "bg-blue-50 border-blue-600 text-blue-700" : "border-silver-300 text-navy-700/50"}`}>
                       {p.featured ? "Featured" : "Not featured"}
                     </button>
                   </td>
                   <td className="px-4 py-3 flex gap-3">
                     <button onClick={() => setEditing(p)} className="text-navy-700/60 hover:text-blue-600"><Pencil size={15} /></button>
-                    <button onClick={() => remove(p.id)} className="text-navy-700/60 hover:text-red-600"><Trash2 size={15} /></button>
+                    <HoldActionButton loading={deletingId === p.id} disabled={Boolean(deletingId)} onConfirm={() => remove(p.id)} className="!p-1 !text-navy-700/60 hover:!text-red-600" aria-label="Hold to delete project"><Trash2 size={15} /></HoldActionButton>
                   </td>
                 </tr>
               ))}
@@ -95,7 +139,7 @@ export default function ProjectsAdmin() {
 
 function ProjectForm({ initial, onClose, onSaved }) {
   const [form, setForm] = useState(initial);
-  const [saving, setSaving] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -103,20 +147,31 @@ function ProjectForm({ initial, onClose, onSaved }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setSaving(true);
-    const payload = {
-      ...form,
-      gallery: form.gallery ? form.gallery.split("\n").map((s) => s.trim()).filter(Boolean) : [],
-      project_date: form.project_date || null,
-    };
-    if (form.id) {
-      await supabase.from("projects").update(payload).eq("id", form.id);
-    } else {
-      delete payload.id;
-      await supabase.from("projects").insert([payload]);
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        ...form,
+        gallery: form.gallery ? form.gallery.split("\n").map((s) => s.trim()).filter(Boolean) : [],
+        project_date: form.project_date || null,
+      };
+      let result;
+      if (form.id) {
+        result = await supabase.from("projects").update(payload).eq("id", form.id).select("id").maybeSingle();
+      } else {
+        delete payload.id;
+        result = await supabase.from("projects").insert([payload]).select("id").single();
+      }
+      const { data, error } = result;
+      if (error) throw error;
+      if (!data) throw new Error("No project was returned after saving.");
+      toast.success(form.id ? "Item updated successfully!" : "Item created successfully!");
+      onSaved();
+    } catch (error) {
+      console.error("Failed to save project:", error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
     }
-    setSaving(false);
-    onSaved();
   }
 
   return (
@@ -150,9 +205,7 @@ function ProjectForm({ initial, onClose, onSaved }) {
         </div>
 
         <div className="flex gap-3 mt-8">
-          <button type="submit" disabled={saving} className="bg-blue-600 text-white px-6 py-2.5 text-sm font-semibold hover:bg-blue-700 disabled:opacity-60">
-            {saving ? "Saving..." : "Save Project"}
-          </button>
+          <Button type="submit" loading={isSubmitting}>Save Project</Button>
           <button type="button" onClick={onClose} className="px-6 py-2.5 text-sm font-semibold text-navy-700/60">Cancel</button>
         </div>
       </form>

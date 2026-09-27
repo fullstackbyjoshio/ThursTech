@@ -1,4 +1,4 @@
-import Seo from "../components/ui/Seo";
+import SEO, { localBusinessJsonLd } from "../components/SEO";
 import Hero from "../components/home/Hero";
 import TrustBar from "../components/home/TrustBar";
 import NeedSection from "../components/home/NeedSection";
@@ -9,10 +9,11 @@ import FinalCta from "../components/home/FinalCta";
 export default function Home() {
   return (
     <>
-      <Seo
+      <SEO
         title="THURSTECH Nigeria Limited | AC Sales, Installation & Repair"
         description="THURSTECH Nigeria Limited supplies, installs, services and repairs air conditioners for homes, offices and businesses. Request AC sales, installation, repair or maintenance support."
-        path="/"
+        canonical="/"
+        jsonLd={localBusinessJsonLd}
       />
       <Hero />
       <TrustBar />

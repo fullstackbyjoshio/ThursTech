@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
+import { toast } from "../../components/ui/Toast";
+import Button from "../../components/ui/button-1";
+import HoldActionButton from "../../components/ui/HoldActionButton";
 import StatusBadge from "../../components/ui/StatusBadge";
 
 export const STATUS_OPTIONS = [
@@ -18,12 +21,22 @@ export default function LeadsTable({ table, columns }) {
   const [statusFilter, setStatusFilter] = useState("All");
   const [activeId, setActiveId] = useState(null);
   const [noteDraft, setNoteDraft] = useState("");
+  const [savingNoteId, setSavingNoteId] = useState(null);
+  const [updatingStatusId, setUpdatingStatusId] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   async function load() {
     setLoading(true);
-    const { data, error } = await supabase.from(table).select("*").order("created_at", { ascending: false });
-    if (!error && data) setRows(data);
-    setLoading(false);
+    try {
+      const { data, error } = await supabase.from(table).select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      if (data) setRows(data);
+    } catch (error) {
+      console.error(`Failed to load ${table}:`, error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -32,20 +45,52 @@ export default function LeadsTable({ table, columns }) {
   }, [table]);
 
   async function updateStatus(id, status) {
-    await supabase.from(table).update({ status, updated_at: new Date().toISOString() }).eq("id", id);
-    load();
+    setUpdatingStatusId(id);
+    try {
+      const { data, error } = await supabase.from(table).update({ status, updated_at: new Date().toISOString() }).eq("id", id).select("id").maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("Record was not found or could not be updated.");
+      toast.success("Item updated successfully!");
+      await load();
+    } catch (error) {
+      console.error(`Failed to update ${table} status:`, error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setUpdatingStatusId(null);
+    }
   }
 
   async function saveNote(id) {
-    await supabase.from(table).update({ admin_notes: noteDraft, updated_at: new Date().toISOString() }).eq("id", id);
-    setActiveId(null);
-    load();
+    setSavingNoteId(id);
+    try {
+      const { data, error } = await supabase.from(table).update({ admin_notes: noteDraft, updated_at: new Date().toISOString() }).eq("id", id).select("id").maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("Record was not found or could not be updated.");
+      toast.success("Item updated successfully!");
+      setActiveId(null);
+      await load();
+    } catch (error) {
+      console.error(`Failed to update ${table} notes:`, error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setSavingNoteId(null);
+    }
   }
 
   async function remove(id) {
-    if (!window.confirm("Delete this record? This cannot be undone.")) return;
-    await supabase.from(table).delete().eq("id", id);
-    load();
+    setDeletingId(id);
+    try {
+      const { data, error } = await supabase.from(table).delete().eq("id", id).select("id").maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("Record was not found or could not be deleted.");
+      toast.success("Item deleted successfully!");
+      await load();
+    } catch (error) {
+      console.error(`Failed to delete ${table} record:`, error);
+      toast.error(`Operation failed: ${error.message}`);
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   const filtered = rows.filter((r) => {
@@ -98,6 +143,7 @@ export default function LeadsTable({ table, columns }) {
                     <select
                       value={row.status || "New"}
                       onChange={(e) => updateStatus(row.id, e.target.value)}
+                      disabled={updatingStatusId === row.id}
                       className="text-xs border border-silver-300 px-2 py-1"
                     >
                       {STATUS_OPTIONS.map((s) => <option key={s}>{s}</option>)}
@@ -116,8 +162,8 @@ export default function LeadsTable({ table, columns }) {
                           onChange={(e) => setNoteDraft(e.target.value)}
                         />
                         <div className="flex gap-2">
-                          <button onClick={() => saveNote(row.id)} className="text-xs font-semibold text-blue-600">Save</button>
-                          <button onClick={() => setActiveId(null)} className="text-xs text-navy-700/50">Cancel</button>
+                          <Button type="button" loading={savingNoteId === row.id} onClick={() => saveNote(row.id)} className="!px-3 !py-1 !text-xs">Save</Button>
+                          <button type="button" onClick={() => setActiveId(null)} className="text-xs text-navy-700/50">Cancel</button>
                         </div>
                       </div>
                     ) : (
@@ -133,7 +179,7 @@ export default function LeadsTable({ table, columns }) {
                     {row.created_at ? new Date(row.created_at).toLocaleDateString() : "—"}
                   </td>
                   <td className="px-4 py-3">
-                    <button onClick={() => remove(row.id)} className="text-xs text-red-600 hover:underline">Delete</button>
+                    <HoldActionButton loading={deletingId === row.id} disabled={Boolean(deletingId)} onConfirm={() => remove(row.id)} label="Hold to delete record" className="!px-3 !py-1 !text-xs">Delete</HoldActionButton>
                   </td>
                 </tr>
               ))}

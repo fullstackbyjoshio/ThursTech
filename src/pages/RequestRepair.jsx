@@ -5,6 +5,8 @@ import { sendFormEmail } from "../lib/emailjs";
 import { buildWhatsAppLink, whatsappTemplates } from "../lib/whatsapp";
 import Seo from "../components/ui/Seo";
 import SectionHeading from "../components/ui/SectionHeading";
+import { toast } from "../components/ui/Toast";
+import Button from "../components/ui/button-1";
 
 const PROBLEM_OPTIONS = ["Not cooling", "Water leaking", "Making noise", "Not powering on", "Blowing warm air", "Poor airflow", "Electrical issue", "Other"];
 
@@ -67,8 +69,10 @@ export default function RequestRepair() {
       setStatus("success");
       setForm(initialForm);
       setPhoto(null);
-    } catch (err) {
-      console.error("Submission Error:", err);
+      toast.success("Your request has been submitted successfully!");
+    } catch (error) {
+      console.error("Submission Error:", error);
+      toast.error(`Submission failed: ${error?.message || "Please try again."}`);
       setStatus("error");
     }
   }
@@ -149,9 +153,9 @@ export default function RequestRepair() {
             <input type="file" accept="image/*,video/*" onChange={(e) => setPhoto(e.target.files?.[0] ?? null)} className="text-sm" />
           </Field>
 
-          <button type="submit" disabled={status === "loading"} className="w-full bg-blue-600 text-white py-3.5 font-semibold hover:bg-blue-700 disabled:opacity-60">
+          <Button type="submit" loading={status === "loading"} className="w-full py-3.5">
             {status === "loading" ? "Sending..." : "Book AC Repair"}
-          </button>
+          </Button>
         </form>
       </section>
     </>

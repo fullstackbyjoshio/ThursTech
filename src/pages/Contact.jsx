@@ -2,8 +2,10 @@ import { useState } from "react";
 import { CheckCircle2, AlertTriangle, Phone, Mail } from "lucide-react";
 import { supabase } from "../lib/supabaseClient";
 import { sendFormEmail } from "../lib/emailjs";
-import Seo from "../components/ui/Seo";
+import SEO, { localBusinessJsonLd } from "../components/SEO";
 import SectionHeading from "../components/ui/SectionHeading";
+import { toast } from "../components/ui/Toast";
+import Button from "../components/ui/button-1";
 import { business } from "../data/business";
 
 const SERVICE_OPTIONS = ["Buy an AC", "AC Installation", "AC Repair", "AC Servicing", "AC Maintenance", "Commercial Project", "Other"];
@@ -48,18 +50,21 @@ export default function Contact() {
 
       setStatus("success");
       setForm(initialForm);
-    } catch (err) {
-      console.error("Submission Error:", err);
+      toast.success("Your request has been submitted successfully!");
+    } catch (error) {
+      console.error("Submission Error:", error);
+      toast.error(`Submission failed: ${error?.message || "Please try again."}`);
       setStatus("error");
     }
   }
 
   return (
     <>
-      <Seo
+      <SEO
         title="Contact THURSTECH Nigeria Limited | AC & HVAC Services"
         description="Contact THURSTECH Nigeria Limited for air conditioner sales, installation, repair, servicing and maintenance enquiries."
-        path="/contact"
+        canonical="/contact"
+        jsonLd={localBusinessJsonLd}
       />
       <section className="container-page py-16 sm:py-20 grid grid-cols-1 lg:grid-cols-2 gap-12">
         <div>
@@ -116,9 +121,9 @@ export default function Contact() {
             <Field label="Message">
               <textarea required rows={4} value={form.description} onChange={(e) => update("description", e.target.value)} className="input" />
             </Field>
-            <button type="submit" disabled={status === "loading"} className="w-full bg-blue-600 text-white py-3.5 font-semibold hover:bg-blue-700 disabled:opacity-60">
+            <Button type="submit" loading={status === "loading"} className="w-full py-3.5">
               {status === "loading" ? "Sending..." : "Send Message"}
-            </button>
+            </Button>
           </form>
         </div>
       </section>
