@@ -58,7 +58,7 @@ export default function Shop() {
 
         <div className="mt-10">
           {loading ? (
-            <p className="text-sm text-navy-700/50">Loading products...</p>
+            <p className="text-sm text-navy-700/80">Loading products...</p>
           ) : filtered.length === 0 ? (
             <EmptyState
               title="No products in this category yet"
@@ -72,12 +72,12 @@ export default function Shop() {
                     {p.image_url ? (
                       <OptimizedImage src={p.image_url} alt={p.name} width={800} height={800} className="w-full h-full object-cover" frameClassName="w-full h-full" />
                     ) : (
-                      <span className="text-xs text-navy-700/40">No image</span>
+                      <span className="text-xs text-navy-700/80">No image</span>
                     )}
                   </div>
                   <div className="p-4">
                     <p className="font-semibold text-sm">{p.brand} {p.name}</p>
-                    <p className="text-xs text-navy-700/60 mt-1">{p.capacity} &bull; {p.category}</p>
+                    <p className="text-xs text-navy-700/80 mt-1">{p.capacity} &bull; {p.category}</p>
                     <p className="text-sm font-bold text-blue-600 mt-2">
                       {p.price ? `\u20a6${Number(p.price).toLocaleString()}` : "Request Current Price"}
                     </p>

@@ -54,12 +54,12 @@ export default function Projects() {
                     {p.cover_image ? (
                       <OptimizedImage src={p.cover_image} alt={p.title} width={800} height={800} className="w-full h-full object-cover" frameClassName="w-full h-full" />
                     ) : (
-                      <span className="text-xs text-navy-700/40">No image</span>
+                      <span className="text-xs text-navy-700/80">No image</span>
                     )}
                   </div>
                   <div className="p-4">
                     <p className="font-semibold text-sm">{p.title}</p>
-                    <p className="text-xs text-navy-700/60 mt-1">{p.location} &bull; {p.service}</p>
+                    <p className="text-xs text-navy-700/80 mt-1">{p.location} &bull; {p.service}</p>
                   </div>
                 </Link>
               ))}

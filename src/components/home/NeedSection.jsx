@@ -46,7 +46,7 @@ export default function NeedSection() {
           >
             <Icon size={28} className="text-blue-600 mb-4" strokeWidth={1.75} />
             <h3 className="font-display font-bold text-lg mb-2">{title}</h3>
-            <p className="text-sm text-navy-700/70 mb-4 leading-relaxed">{body}</p>
+            <p className="text-sm text-navy-700/80 mb-4 leading-relaxed">{body}</p>
             <span className="text-sm font-semibold text-blue-600 group-hover:underline">{cta}</span>
           </Link>
         ))}

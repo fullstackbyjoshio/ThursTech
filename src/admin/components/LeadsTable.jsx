@@ -116,9 +116,9 @@ export default function LeadsTable({ table, columns }) {
       </div>
 
       {loading ? (
-        <p className="text-sm text-navy-700/50">Loading...</p>
+        <p className="text-sm text-navy-700/80">Loading...</p>
       ) : filtered.length === 0 ? (
-        <p className="text-sm text-navy-700/50 border border-dashed border-silver-300 p-8 text-center">No records found.</p>
+        <p className="text-sm text-navy-700/80 border border-dashed border-silver-300 p-8 text-center">No records found.</p>
       ) : (
         <div className="overflow-x-auto border border-silver-200">
           <table className="w-full text-sm min-w-[720px]">
@@ -163,19 +163,19 @@ export default function LeadsTable({ table, columns }) {
                         />
                         <div className="flex gap-2">
                           <Button type="button" loading={savingNoteId === row.id} onClick={() => saveNote(row.id)} className="!px-3 !py-1 !text-xs">Save</Button>
-                          <button type="button" onClick={() => setActiveId(null)} className="text-xs text-navy-700/50">Cancel</button>
+                          <button type="button" onClick={() => setActiveId(null)} className="text-xs text-navy-700/80">Cancel</button>
                         </div>
                       </div>
                     ) : (
                       <button
                         onClick={() => { setActiveId(row.id); setNoteDraft(row.admin_notes || ""); }}
-                        className="text-xs text-left text-navy-700/70 hover:text-blue-600"
+                        className="text-xs text-left text-navy-700/80 hover:text-blue-600"
                       >
                         {row.admin_notes ? row.admin_notes : "+ Add note"}
                       </button>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-xs text-navy-700/50 whitespace-nowrap">
+                  <td className="px-4 py-3 text-xs text-navy-700/80 whitespace-nowrap">
                     {row.created_at ? new Date(row.created_at).toLocaleDateString() : "—"}
                   </td>
                   <td className="px-4 py-3">

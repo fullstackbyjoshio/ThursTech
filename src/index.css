@@ -57,6 +57,6 @@
   }
 
   .input {
-    @apply w-full border border-silver-300 px-3.5 py-2.5 text-sm bg-white focus:border-blue-600 focus:outline-none transition-colors;
+    @apply w-full border border-silver-300 px-3.5 py-2.5 text-sm bg-white focus:border-blue-600 focus:outline-none transition-colors placeholder:text-slate-600;
   }
 }

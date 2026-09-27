@@ -2,9 +2,8 @@ import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Layout from "./components/layout/Layout";
-import Skeleton from "./components/ui/Skeleton";
+import Home from "./pages/Home.jsx";
 
-const Home = lazy(() => import("./pages/Home.jsx"));
 const About = lazy(() => import("./pages/About.jsx"));
 const Shop = lazy(() => import("./pages/Shop.jsx"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail.jsx"));
@@ -20,7 +19,7 @@ const NotFound = lazy(() => import("./pages/NotFound.jsx"));
 
 const AdminLogin = lazy(() => import("./admin/AdminLogin.jsx"));
 const AdminLayout = lazy(() => import("./admin/AdminLayout.jsx"));
-import ProtectedRoute from "./admin/ProtectedRoute";
+const ProtectedRoute = lazy(() => import("./admin/ProtectedRoute"));
 const AdminDashboard = lazy(() => import("./admin/AdminDashboard.jsx"));
 const QuoteRequests = lazy(() => import("./admin/QuoteRequests.jsx"));
 const RepairRequests = lazy(() => import("./admin/RepairRequests.jsx"));
@@ -34,18 +33,7 @@ const Settings = lazy(() => import("./admin/Settings.jsx"));
 
 export default function App() {
   return (
-    <Suspense
-      fallback={(
-        <main role="status" aria-label="Loading page" className="container-page py-16">
-          <Skeleton className="mb-8 h-7 w-48" />
-          <Skeleton className="mb-4 h-4 w-2/3" />
-          <Skeleton className="h-4 w-1/2" />
-          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 3 }, (_, index) => <Skeleton key={index} className="h-44 w-full" />)}
-          </div>
-        </main>
-      )}
-    >
+    <Suspense fallback={<div className="min-h-screen bg-slate-900" />}>
       <Routes>
         {/* Public site */}
         <Route element={<Layout />}>

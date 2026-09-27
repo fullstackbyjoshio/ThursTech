@@ -72,7 +72,7 @@ export default function Products() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-display font-bold mb-1">Products</h1>
-          <p className="text-sm text-navy-700/60">Manage the AC catalogue shown on the Shop page.</p>
+          <p className="text-sm text-navy-700/80">Manage the AC catalogue shown on the Shop page.</p>
         </div>
         <button onClick={() => setEditing("new")} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 text-sm font-semibold hover:bg-blue-700">
           <Plus size={16} /> Add Product
@@ -92,7 +92,7 @@ export default function Products() {
           ))}
         </div>
       ) : products.length === 0 ? (
-        <p className="text-sm text-navy-700/50 border border-dashed border-silver-300 p-8 text-center">No products yet. Add your first AC unit.</p>
+        <p className="text-sm text-navy-700/80 border border-dashed border-silver-300 p-8 text-center">No products yet. Add your first AC unit.</p>
       ) : (
         <div className="overflow-x-auto border border-silver-200 bg-white">
           <table className="w-full text-sm min-w-[760px]">
@@ -111,23 +111,23 @@ export default function Products() {
                 <tr key={p.id} className="border-t border-silver-200">
                   <td className="px-4 py-3">
                     <p className="font-medium">{p.brand} {p.name}</p>
-                    <p className="text-xs text-navy-700/50">{p.capacity} &bull; {p.model}</p>
+                    <p className="text-xs text-navy-700/80">{p.capacity} &bull; {p.model}</p>
                   </td>
                   <td className="px-4 py-3">{p.category}</td>
                   <td className="px-4 py-3">{p.price ? `\u20a6${Number(p.price).toLocaleString()}` : "Request Price"}</td>
                   <td className="px-4 py-3">
-                    <button disabled={updatingId === p.id} onClick={() => toggleField(p, "featured")} className={`text-xs px-2 py-1 border disabled:opacity-50 ${p.featured ? "bg-blue-50 border-blue-600 text-blue-700" : "border-silver-300 text-navy-700/50"}`}>
+                    <button disabled={updatingId === p.id} onClick={() => toggleField(p, "featured")} className={`text-xs px-2 py-1 border disabled:opacity-50 ${p.featured ? "bg-blue-50 border-blue-600 text-blue-700" : "border-silver-300 text-navy-700/80"}`}>
                       {p.featured ? "Featured" : "Not featured"}
                     </button>
                   </td>
                   <td className="px-4 py-3">
-                    <button disabled={updatingId === p.id} onClick={() => toggleField(p, "active")} className={`text-xs px-2 py-1 border disabled:opacity-50 ${p.active ? "bg-green-50 border-green-600 text-green-700" : "border-silver-300 text-navy-700/50"}`}>
+                    <button disabled={updatingId === p.id} onClick={() => toggleField(p, "active")} className={`text-xs px-2 py-1 border disabled:opacity-50 ${p.active ? "bg-green-50 border-green-700 text-green-800" : "border-silver-300 text-navy-700/80"}`}>
                       {p.active ? "Published" : "Unpublished"}
                     </button>
                   </td>
                   <td className="px-4 py-3 flex gap-3">
-                    <button onClick={() => setEditing(p)} className="text-navy-700/60 hover:text-blue-600"><Pencil size={15} /></button>
-                    <HoldActionButton loading={deletingId === p.id} disabled={Boolean(deletingId)} onConfirm={() => remove(p.id)} className="!p-1 !text-navy-700/60 hover:!text-red-600" aria-label="Hold to delete product"><Trash2 size={15} /></HoldActionButton>
+                    <button onClick={() => setEditing(p)} className="text-navy-700/80 hover:text-blue-600"><Pencil size={15} /></button>
+                    <HoldActionButton loading={deletingId === p.id} disabled={Boolean(deletingId)} onConfirm={() => remove(p.id)} className="!p-1 !text-navy-700/70 hover:!text-red-600" aria-label="Hold to delete product"><Trash2 size={15} /></HoldActionButton>
                   </td>
                 </tr>
               ))}
@@ -292,7 +292,7 @@ function ProductForm({ initial, onClose, onSaved }) {
           <div className="block">
             <div className="flex justify-between items-center mb-1.5">
               <span className="text-sm font-medium text-navy-800">Product Photos (Max 3)</span>
-              <span className="text-xs text-navy-700/60">{currentImages.length}/3 uploaded</span>
+              <span className="text-xs text-navy-700/80">{currentImages.length}/3 uploaded</span>
             </div>
             
             <input
@@ -354,7 +354,7 @@ function ProductForm({ initial, onClose, onSaved }) {
 
         <div className="flex gap-3 mt-8">
           <Button loading={isSubmitting} disabled={uploading}>Save Product</Button>
-          <button type="button" onClick={onClose} className="px-6 py-2.5 text-sm font-semibold text-navy-700/60">Cancel</button>
+          <button type="button" onClick={onClose} className="px-6 py-2.5 text-sm font-semibold text-navy-700/80">Cancel</button>
         </div>
       </form>
     </div>

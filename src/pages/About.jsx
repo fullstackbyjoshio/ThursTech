@@ -26,7 +26,7 @@ export default function About() {
           </p>
         </div>
 
-        <div className="mt-10 border border-dashed border-silver-300 p-6 text-sm text-navy-700/60">
+        <div className="mt-10 border border-dashed border-silver-300 p-6 text-sm text-navy-700/80">
           <p className="font-semibold text-navy-900 mb-1">More about our story, coming soon</p>
           <p>
             Founding year, leadership background, brands supplied, certifications and service

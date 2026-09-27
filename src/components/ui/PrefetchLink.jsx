@@ -1,7 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 
 const routePrefetchers = {
-  "/": () => import("../../pages/Home.jsx"),
   "/about": () => import("../../pages/About.jsx"),
   "/shop": () => import("../../pages/Shop.jsx"),
   "/products": () => import("../../pages/Shop.jsx"),

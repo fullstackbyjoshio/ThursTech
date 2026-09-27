@@ -26,7 +26,7 @@ export default function AdminLogin() {
     <div className="min-h-screen bg-navy-900 flex items-center justify-center px-4">
       <form onSubmit={handleSubmit} className="bg-white w-full max-w-sm p-8">
         <p className="font-display font-extrabold text-xl text-navy-900 mb-1">THURSTECH</p>
-        <p className="text-sm text-navy-700/60 mb-6">Admin sign in</p>
+        <p className="text-sm text-navy-700/80 mb-6">Admin sign in</p>
 
         {error && <p className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 p-3">{error}</p>}
 

@@ -13,7 +13,7 @@ export default function QuoteRequests() {
   return (
     <div>
       <h1 className="text-2xl font-display font-bold mb-1">Quote Requests</h1>
-      <p className="text-sm text-navy-700/60 mb-6">Leads submitted through the Request a Quote form.</p>
+      <p className="text-sm text-navy-700/80 mb-6">Leads submitted through the Request a Quote form.</p>
       <LeadsTable table="quote_requests" columns={columns} />
     </div>
   );

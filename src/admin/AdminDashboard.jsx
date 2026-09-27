@@ -65,10 +65,10 @@ export default function AdminDashboard() {
   return (
     <div>
       <h1 className="text-2xl font-display font-bold mb-1">Dashboard</h1>
-      <p className="text-sm text-navy-700/60 mb-8">Overview of THURSTECH website activity.</p>
+      <p className="text-sm text-navy-700/80 mb-8">Overview of THURSTECH website activity.</p>
 
       {loading ? (
-        <p className="text-sm text-navy-700/50">Loading...</p>
+        <p className="text-sm text-navy-700/80">Loading...</p>
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard label="Total Enquiries" value={totalEnquiries} accent />

@@ -17,7 +17,7 @@ function FaqItem({ q, a }) {
         {q}
         <ChevronDown size={18} className={`transition-transform shrink-0 ml-4 ${open ? "rotate-180" : ""}`} />
       </button>
-      {open && <p className="pb-4 text-sm text-navy-700/70 leading-relaxed">{a}</p>}
+      {open && <p className="pb-4 text-sm text-navy-700/80 leading-relaxed">{a}</p>}
     </div>
   );
 }
@@ -40,7 +40,7 @@ export default function ServiceDetail() {
           <div className="flex flex-wrap gap-3">
             <WhatsAppLink
               message={service.whatsappMessage()}
-              className="!bg-[#25D366] !text-white px-5 py-3 hover:!no-underline hover:opacity-90"
+              className="!bg-[#15803d] !text-white px-5 py-3 hover:!no-underline hover:opacity-90"
             />
             <Button to={service.requestPath} variant="outline" className="!border-white !text-white hover:!bg-white hover:!text-navy-900">
               {service.ctaLabel}
@@ -83,12 +83,12 @@ export default function ServiceDetail() {
 
       <section className="container-page py-14 text-center">
         <h2 className="text-2xl font-bold mb-3">Ready to proceed?</h2>
-        <p className="text-navy-700/70 mb-6">Tell us what you need and we will get back to you.</p>
+        <p className="text-navy-700/80 mb-6">Tell us what you need and we will get back to you.</p>
         <div className="flex flex-wrap gap-3 justify-center">
           <Link to={service.requestPath} className="bg-blue-600 text-white px-6 py-3 text-sm font-semibold hover:bg-blue-700">
             {service.ctaLabel}
           </Link>
-          <WhatsAppLink message={service.whatsappMessage()} className="!bg-[#25D366] !text-white px-6 py-3 hover:!no-underline hover:opacity-90" />
+          <WhatsAppLink message={service.whatsappMessage()} className="!bg-[#15803d] !text-white px-6 py-3 hover:!no-underline hover:opacity-90" />
         </div>
       </section>
     </>

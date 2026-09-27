@@ -7,7 +7,7 @@ export default function WhatsAppLink({ message, children, className = "" }) {
       href={buildWhatsAppLink(message)}
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex items-center gap-2 font-semibold text-[#1fb958] hover:underline ${className}`}
+      className={`inline-flex items-center gap-2 font-semibold text-green-700 hover:underline ${className}`}
     >
       <MessageCircle size={18} />
       {children || "Chat on WhatsApp"}

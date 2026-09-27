@@ -10,7 +10,7 @@ export default function ProtectedRoute({ children }) {
   const { session, isAdmin, loading } = useAuth();
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-sm text-navy-700/50">Checking access...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-sm text-navy-700/80">Checking access...</div>;
   }
   if (!session) return <Navigate to="/admin/login" replace />;
   if (!isAdmin) {
@@ -18,7 +18,7 @@ export default function ProtectedRoute({ children }) {
       <div className="min-h-screen flex items-center justify-center text-center px-6">
         <div>
           <p className="font-display font-bold text-xl mb-2">Not authorized</p>
-          <p className="text-sm text-navy-700/60">This account does not have admin access to THURSTECH's dashboard.</p>
+          <p className="text-sm text-navy-700/80">This account does not have admin access to THURSTECH's dashboard.</p>
         </div>
       </div>
     );

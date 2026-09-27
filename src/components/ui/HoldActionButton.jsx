@@ -55,7 +55,7 @@ export default function HoldActionButton({
   return (
     <motion.button
       type="button"
-      className={`relative isolate inline-flex touch-none select-none items-center justify-center gap-1.5 overflow-hidden border border-red-300 bg-red-50 px-2 py-1 text-xs font-semibold text-red-700 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`relative isolate inline-flex touch-none select-none items-center justify-center gap-1.5 overflow-hidden border border-red-300 bg-red-50 px-2 py-1 text-xs font-semibold text-red-800 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       disabled={unavailable}
       aria-label={label}
       aria-busy={loading}

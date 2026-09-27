@@ -13,7 +13,7 @@ function FaqItem({ question, answer }) {
         {question}
         <ChevronDown size={18} className={`transition-transform shrink-0 ml-4 ${open ? "rotate-180" : ""}`} />
       </button>
-      {open && <p className="pb-4 text-sm text-navy-700/70 leading-relaxed">{answer}</p>}
+      {open && <p className="pb-4 text-sm text-navy-700/80 leading-relaxed">{answer}</p>}
     </div>
   );
 }
@@ -52,7 +52,7 @@ export default function FAQ() {
         <SectionHeading eyebrow="FAQs" title="Frequently Asked Questions" />
         <div className="mt-8">
           {loading ? (
-            <p className="text-sm text-navy-700/50">Loading...</p>
+            <p className="text-sm text-navy-700/80">Loading...</p>
           ) : faqs.length === 0 ? (
             <EmptyState title="FAQs coming soon" description="Common questions and answers will appear here once added through the admin dashboard." />
           ) : (

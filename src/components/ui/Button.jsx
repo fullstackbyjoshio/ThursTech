@@ -4,7 +4,7 @@ const variants = {
   primary: "bg-blue-600 text-white hover:bg-blue-700",
   outline: "border border-navy-900 text-navy-900 hover:bg-navy-900 hover:text-white",
   ghost: "text-navy-900 hover:bg-silver-100",
-  whatsapp: "bg-[#25D366] text-white hover:bg-[#1fb958]",
+  whatsapp: "bg-[#15803d] text-white hover:bg-[#166534]",
 };
 
 export default function Button({ as, to, href, variant = "primary", className = "", children, ...props }) {

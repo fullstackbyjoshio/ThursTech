@@ -51,14 +51,14 @@ export default function Customers() {
   return (
     <div>
       <h1 className="text-2xl font-display font-bold mb-1">Customers / Leads</h1>
-      <p className="text-sm text-navy-700/60 mb-6">Every enquiry across quote, repair and service requests.</p>
+      <p className="text-sm text-navy-700/80 mb-6">Every enquiry across quote, repair and service requests.</p>
 
       <input placeholder="Search by name, phone, email, location..." value={search} onChange={(e) => setSearch(e.target.value)} className="input max-w-md mb-5" />
 
       {loading ? (
-        <p className="text-sm text-navy-700/50">Loading...</p>
+        <p className="text-sm text-navy-700/80">Loading...</p>
       ) : filtered.length === 0 ? (
-        <p className="text-sm text-navy-700/50 border border-dashed border-silver-300 p-8 text-center">No customer records yet.</p>
+        <p className="text-sm text-navy-700/80 border border-dashed border-silver-300 p-8 text-center">No customer records yet.</p>
       ) : (
         <div className="overflow-x-auto border border-silver-200 bg-white">
           <table className="w-full text-sm min-w-[760px]">
@@ -80,11 +80,11 @@ export default function Customers() {
                   <td className="px-4 py-3 font-medium">{r.customer_name || "—"}</td>
                   <td className="px-4 py-3">{r.phone || r.whatsapp || "—"}</td>
                   <td className="px-4 py-3">{r.email || "—"}</td>
-                  <td className="px-4 py-3 text-xs text-navy-700/60">{r.source}</td>
+                  <td className="px-4 py-3 text-xs text-navy-700/80">{r.source}</td>
                   <td className="px-4 py-3">{r.request || "—"}</td>
                   <td className="px-4 py-3">{r.location || "—"}</td>
                   <td className="px-4 py-3"><StatusBadge status={r.status || "New"} /></td>
-                  <td className="px-4 py-3 text-xs text-navy-700/50 whitespace-nowrap">
+                  <td className="px-4 py-3 text-xs text-navy-700/80 whitespace-nowrap">
                     {r.created_at ? new Date(r.created_at).toLocaleDateString() : "—"}
                   </td>
                 </tr>

@@ -71,7 +71,7 @@ export default function ProjectsAdmin() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-display font-bold mb-1">Projects</h1>
-          <p className="text-sm text-navy-700/60">Real, completed work shown on the Projects page.</p>
+          <p className="text-sm text-navy-700/80">Real, completed work shown on the Projects page.</p>
         </div>
         <button onClick={() => setEditing("new")} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 text-sm font-semibold hover:bg-blue-700">
           <Plus size={16} /> Add Project
@@ -91,7 +91,7 @@ export default function ProjectsAdmin() {
           ))}
         </div>
       ) : projects.length === 0 ? (
-        <p className="text-sm text-navy-700/50 border border-dashed border-silver-300 p-8 text-center">No projects yet. Add your first completed job.</p>
+        <p className="text-sm text-navy-700/80 border border-dashed border-silver-300 p-8 text-center">No projects yet. Add your first completed job.</p>
       ) : (
         <div className="overflow-x-auto border border-silver-200 bg-white">
           <table className="w-full text-sm min-w-[640px]">
@@ -111,13 +111,13 @@ export default function ProjectsAdmin() {
                   <td className="px-4 py-3">{p.location}</td>
                   <td className="px-4 py-3">{p.service}</td>
                   <td className="px-4 py-3">
-                    <button disabled={updatingId === p.id} onClick={() => toggleFeatured(p)} className={`text-xs px-2 py-1 border disabled:opacity-50 ${p.featured ? "bg-blue-50 border-blue-600 text-blue-700" : "border-silver-300 text-navy-700/50"}`}>
+                    <button disabled={updatingId === p.id} onClick={() => toggleFeatured(p)} className={`text-xs px-2 py-1 border disabled:opacity-50 ${p.featured ? "bg-blue-50 border-blue-600 text-blue-700" : "border-silver-300 text-navy-700/80"}`}>
                       {p.featured ? "Featured" : "Not featured"}
                     </button>
                   </td>
                   <td className="px-4 py-3 flex gap-3">
-                    <button onClick={() => setEditing(p)} className="text-navy-700/60 hover:text-blue-600"><Pencil size={15} /></button>
-                    <HoldActionButton loading={deletingId === p.id} disabled={Boolean(deletingId)} onConfirm={() => remove(p.id)} className="!p-1 !text-navy-700/60 hover:!text-red-600" aria-label="Hold to delete project"><Trash2 size={15} /></HoldActionButton>
+                    <button onClick={() => setEditing(p)} className="text-navy-700/80 hover:text-blue-600"><Pencil size={15} /></button>
+                    <HoldActionButton loading={deletingId === p.id} disabled={Boolean(deletingId)} onConfirm={() => remove(p.id)} className="!p-1 !text-navy-700/70 hover:!text-red-600" aria-label="Hold to delete project"><Trash2 size={15} /></HoldActionButton>
                   </td>
                 </tr>
               ))}
@@ -206,7 +206,7 @@ function ProjectForm({ initial, onClose, onSaved }) {
 
         <div className="flex gap-3 mt-8">
           <Button type="submit" loading={isSubmitting}>Save Project</Button>
-          <button type="button" onClick={onClose} className="px-6 py-2.5 text-sm font-semibold text-navy-700/60">Cancel</button>
+          <button type="button" onClick={onClose} className="px-6 py-2.5 text-sm font-semibold text-navy-700/80">Cancel</button>
         </div>
       </form>
     </div>

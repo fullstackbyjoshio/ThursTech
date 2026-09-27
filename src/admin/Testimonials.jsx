@@ -66,7 +66,7 @@ export default function Testimonials() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-display font-bold mb-1">Testimonials</h1>
-          <p className="text-sm text-navy-700/60">Only approved, real customer reviews are shown publicly.</p>
+          <p className="text-sm text-navy-700/80">Only approved, real customer reviews are shown publicly.</p>
         </div>
         <button onClick={() => setAdding(true)} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 text-sm font-semibold hover:bg-blue-700">
           <Plus size={16} /> Add Testimonial
@@ -90,7 +90,7 @@ export default function Testimonials() {
           ))}
         </div>
       ) : items.length === 0 ? (
-        <p className="text-sm text-navy-700/50 border border-dashed border-silver-300 p-8 text-center">No testimonials yet.</p>
+        <p className="text-sm text-navy-700/80 border border-dashed border-silver-300 p-8 text-center">No testimonials yet.</p>
       ) : (
         <div className="grid gap-4">
           {items.map((t) => (
@@ -98,15 +98,15 @@ export default function Testimonials() {
               <div className="flex justify-between items-start gap-4">
                 <div>
                   <p className="font-semibold text-sm">{t.customer_name} &bull; {"\u2605".repeat(t.rating || 0)}</p>
-                  <p className="text-sm text-navy-700/70 mt-2 leading-relaxed">{t.review}</p>
+                  <p className="text-sm text-navy-700/80 mt-2 leading-relaxed">{t.review}</p>
                 </div>
-                <HoldActionButton loading={deletingId === t.id} disabled={Boolean(deletingId)} onConfirm={() => remove(t.id)} className="!p-1 !text-navy-700/40 hover:!text-red-600 shrink-0" aria-label="Hold to delete testimonial"><Trash2 size={15} /></HoldActionButton>
+                <HoldActionButton loading={deletingId === t.id} disabled={Boolean(deletingId)} onConfirm={() => remove(t.id)} className="!p-1 !text-navy-700/70 hover:!text-red-600 shrink-0" aria-label="Hold to delete testimonial"><Trash2 size={15} /></HoldActionButton>
               </div>
               <div className="flex gap-2 mt-3">
-                <button disabled={updatingId === t.id} onClick={() => toggle(t, "approved")} className={`text-xs px-2 py-1 border disabled:opacity-50 ${t.approved ? "bg-green-50 border-green-600 text-green-700" : "border-silver-300 text-navy-700/50"}`}>
+                <button disabled={updatingId === t.id} onClick={() => toggle(t, "approved")} className={`text-xs px-2 py-1 border disabled:opacity-50 ${t.approved ? "bg-green-50 border-green-700 text-green-800" : "border-silver-300 text-navy-700/80"}`}>
                   {t.approved ? "Approved" : "Pending approval"}
                 </button>
-                <button disabled={updatingId === t.id} onClick={() => toggle(t, "featured")} className={`text-xs px-2 py-1 border disabled:opacity-50 ${t.featured ? "bg-blue-50 border-blue-600 text-blue-700" : "border-silver-300 text-navy-700/50"}`}>
+                <button disabled={updatingId === t.id} onClick={() => toggle(t, "featured")} className={`text-xs px-2 py-1 border disabled:opacity-50 ${t.featured ? "bg-blue-50 border-blue-600 text-blue-700" : "border-silver-300 text-navy-700/80"}`}>
                   {t.featured ? "Featured" : "Not featured"}
                 </button>
               </div>

@@ -23,7 +23,7 @@ export default function Services() {
               className="group border border-silver-200 p-6 hover:border-blue-600 transition-colors flex flex-col"
             >
               <h2 className="font-display font-bold text-lg mb-2">{service.navLabel}</h2>
-              <p className="text-sm text-navy-700/70 mb-4 leading-relaxed flex-1">{service.intro}</p>
+              <p className="text-sm text-navy-700/80 mb-4 leading-relaxed flex-1">{service.intro}</p>
               <span className="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 group-hover:gap-2 transition-all">
                 Learn more <ArrowRight size={15} />
               </span>

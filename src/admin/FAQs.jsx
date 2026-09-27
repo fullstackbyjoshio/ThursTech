@@ -65,7 +65,7 @@ export default function FAQs() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-display font-bold mb-1">FAQs</h1>
-          <p className="text-sm text-navy-700/60">Manage the questions shown on the public FAQ page.</p>
+          <p className="text-sm text-navy-700/80">Manage the questions shown on the public FAQ page.</p>
         </div>
         <button onClick={() => setAdding(true)} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 text-sm font-semibold hover:bg-blue-700">
           <Plus size={16} /> Add FAQ
@@ -73,22 +73,22 @@ export default function FAQs() {
       </div>
 
       {loading ? (
-        <p className="text-sm text-navy-700/50">Loading...</p>
+        <p className="text-sm text-navy-700/80">Loading...</p>
       ) : items.length === 0 ? (
-        <p className="text-sm text-navy-700/50 border border-dashed border-silver-300 p-8 text-center">No FAQs yet.</p>
+        <p className="text-sm text-navy-700/80 border border-dashed border-silver-300 p-8 text-center">No FAQs yet.</p>
       ) : (
         <div className="grid gap-3">
           {items.map((f) => (
             <div key={f.id} className="bg-white border border-silver-200 p-4 flex justify-between items-start gap-4">
               <div>
                 <p className="font-semibold text-sm">{f.question}</p>
-                <p className="text-sm text-navy-700/60 mt-1">{f.answer}</p>
+                <p className="text-sm text-navy-700/80 mt-1">{f.answer}</p>
               </div>
               <div className="flex flex-col items-end gap-2 shrink-0">
-                <button disabled={updatingId === f.id} onClick={() => togglePublished(f)} className={`text-xs px-2 py-1 border disabled:opacity-50 ${f.published ? "bg-green-50 border-green-600 text-green-700" : "border-silver-300 text-navy-700/50"}`}>
+                <button disabled={updatingId === f.id} onClick={() => togglePublished(f)} className={`text-xs px-2 py-1 border disabled:opacity-50 ${f.published ? "bg-green-50 border-green-700 text-green-800" : "border-silver-300 text-navy-700/80"}`}>
                   {f.published ? "Published" : "Draft"}
                 </button>
-                <HoldActionButton loading={deletingId === f.id} disabled={Boolean(deletingId)} onConfirm={() => remove(f.id)} className="!p-1 !text-navy-700/40 hover:!text-red-600" aria-label="Hold to delete FAQ"><Trash2 size={15} /></HoldActionButton>
+                <HoldActionButton loading={deletingId === f.id} disabled={Boolean(deletingId)} onConfirm={() => remove(f.id)} className="!p-1 !text-navy-700/70 hover:!text-red-600" aria-label="Hold to delete FAQ"><Trash2 size={15} /></HoldActionButton>
               </div>
             </div>
           ))}

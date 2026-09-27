@@ -4,7 +4,7 @@ export default function Settings() {
   return (
     <div>
       <h1 className="text-2xl font-display font-bold mb-1">Settings</h1>
-      <p className="text-sm text-navy-700/60 mb-8">
+      <p className="text-sm text-navy-700/80 mb-8">
         Core business details currently used across the site. These come from
         <code className="mx-1 text-xs bg-silver-100 px-1.5 py-0.5">src/data/business.js</code>
         — update that file (and redeploy) to change them everywhere at once.
@@ -19,7 +19,7 @@ export default function Settings() {
         <Row label="Opening Hours" value={business.openingHours || "Not yet confirmed"} muted={!business.openingHours} />
       </div>
 
-      <div className="mt-8 max-w-xl border border-dashed border-silver-300 p-5 text-sm text-navy-700/60">
+      <div className="mt-8 max-w-xl border border-dashed border-silver-300 p-5 text-sm text-navy-700/80">
         <p className="font-semibold text-navy-900 mb-1">Environment configuration</p>
         <p>
           Supabase and EmailJS connection details live in the project's <code className="text-xs bg-silver-100 px-1.5 py-0.5">.env</code> file,
@@ -35,8 +35,8 @@ export default function Settings() {
 function Row({ label, value, muted }) {
   return (
     <div className="flex justify-between gap-4 border-b border-silver-100 pb-3">
-      <span className="text-navy-700/60">{label}</span>
-      <span className={`font-medium text-right ${muted ? "text-navy-700/40 italic" : ""}`}>{value}</span>
+      <span className="text-navy-700/80">{label}</span>
+      <span className={`font-medium text-right ${muted ? "text-navy-700/80 italic" : ""}`}>{value}</span>
     </div>
   );
 }

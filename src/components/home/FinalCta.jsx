@@ -16,7 +16,7 @@ export default function FinalCta() {
           <Button href={`tel:${business.phonesIntl[0]}`} variant="outline" className="!border-white !text-white hover:!bg-white hover:!text-navy-900">
             <Phone size={16} /> {business.phones[0]}
           </Button>
-          <WhatsAppLink message={whatsappTemplates.general()} className="!bg-[#25D366] !text-white px-5 py-3 hover:!no-underline hover:opacity-90" />
+          <WhatsAppLink message={whatsappTemplates.general()} className="!bg-[#15803d] !text-white px-5 py-3 hover:!no-underline hover:opacity-90" />
           <Button to="/request-a-quote" variant="primary">
             Request a Quote
           </Button>

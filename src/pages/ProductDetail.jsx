@@ -90,12 +90,12 @@ export default function ProductDetail() {
           {product.image_url ? (
             <OptimizedImage src={product.image_url} alt={productName} width={1000} height={1000} loading="eager" fetchPriority="high" decoding="async" frameClassName="w-full h-full" />
           ) : (
-            <span className="text-sm text-navy-700/40">No image available</span>
+            <span className="text-sm text-navy-700/80">No image available</span>
           )}
         </div>
 
         <div>
-          <p className="text-ice-500 font-semibold text-sm mb-2">{product.category}</p>
+          <p className="text-blue-600 font-semibold text-sm mb-2">{product.category}</p>
           <h1 className="text-3xl font-extrabold mb-3">{productName}</h1>
           <p className="text-2xl font-bold text-blue-600 mb-6">
             {product.price ? `\u20a6${Number(product.price).toLocaleString()}` : "Request Current Price"}
@@ -108,7 +108,7 @@ export default function ProductDetail() {
               <tbody>
                 {specs.map(([label, value]) => (
                   <tr key={label} className="border-b border-silver-200">
-                    <td className="py-2 pr-4 text-navy-700/60">{label}</td>
+                    <td className="py-2 pr-4 text-navy-700/80">{label}</td>
                     <td className="py-2 font-medium">{value}</td>
                   </tr>
                 ))}
@@ -119,7 +119,7 @@ export default function ProductDetail() {
           <div className="flex flex-wrap gap-3">
             <WhatsAppLink
               message={whatsappTemplates.product(productName)}
-              className="!bg-[#25D366] !text-white px-5 py-3 hover:!no-underline hover:opacity-90"
+              className="!bg-[#15803d] !text-white px-5 py-3 hover:!no-underline hover:opacity-90"
             />
             <Button to="/request-a-quote" variant="outline">
               Request This AC
