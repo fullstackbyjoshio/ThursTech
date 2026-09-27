@@ -31,12 +31,8 @@ export default defineConfig({
       // The plugin discovers `/` from dist/index.html, so avoid emitting it twice.
       dynamicRoutes: publicRoutes.filter((route) => route !== "/"),
       externalSitemaps: ["https://thurstech.vercel.app/sitemap.xml"],
-      generateRobotsTxt: true,
+      generateRobotsTxt: false, // Prevents dist/robots.txt ENOENT error on Vercel
       readable: true,
-      robots: [
-        { userAgent: "*", allow: "/", disallow: "/admin/" },
-        { userAgent: "Googlebot", allow: "/" },
-      ],
     }),
   ],
   server: { port: 5173 },
