@@ -1,0 +1,102 @@
+THURSTECH current project tree (relative paths)
+Generated: 2026-09-28T09:40:14.138Z
+
+thurstech-website/
+|-- docs/
+|   |-- DEPLOYMENT.md
+|   |-- SETUP_EMAILJS.md
+|   \-- SETUP_SUPABASE.md
+|-- public/
+|   |-- favicon.svg
+|   |-- robots.txt
+|   \-- sitemap.xml
+|-- src/
+|   |-- admin/
+|   |   |-- components/
+|   |   |   |-- LeadsTable.jsx
+|   |   |   \-- StatCard.jsx
+|   |   |-- AdminDashboard.jsx
+|   |   |-- AdminLayout.jsx
+|   |   |-- AdminLogin.jsx
+|   |   |-- Customers.jsx
+|   |   |-- FAQs.jsx
+|   |   |-- Products.jsx
+|   |   |-- ProjectsAdmin.jsx
+|   |   |-- ProtectedRoute.jsx
+|   |   |-- QuoteRequests.jsx
+|   |   |-- RepairRequests.jsx
+|   |   |-- ServiceRequests.jsx
+|   |   |-- Settings.jsx
+|   |   \-- Testimonials.jsx
+|   |-- components/
+|   |   |-- home/
+|   |   |   |-- FeaturedProducts.jsx
+|   |   |   |-- FinalCta.jsx
+|   |   |   |-- Hero.jsx
+|   |   |   |-- NeedSection.jsx
+|   |   |   |-- ServicesOverview.jsx
+|   |   |   \-- TrustBar.jsx
+|   |   |-- layout/
+|   |   |   |-- Footer.jsx
+|   |   |   |-- Header.jsx
+|   |   |   |-- Layout.jsx
+|   |   |   \-- MobileActionBar.jsx
+|   |   |-- ui/
+|   |   |   |-- hold-action-button-utils/
+|   |   |   |   \-- ease.js
+|   |   |   |-- button-1.jsx
+|   |   |   |-- Button.jsx
+|   |   |   |-- EmptyState.jsx
+|   |   |   |-- HoldActionButton.jsx
+|   |   |   |-- OptimizedImage.jsx
+|   |   |   |-- PrefetchLink.jsx
+|   |   |   |-- SectionHeading.jsx
+|   |   |   |-- Seo.jsx
+|   |   |   |-- Skeleton.jsx
+|   |   |   |-- StatusBadge.jsx
+|   |   |   |-- Toast.jsx
+|   |   |   \-- WhatsAppLink.jsx
+|   |   \-- SEO.jsx
+|   |-- data/
+|   |   |-- business.js
+|   |   |-- navigation.js
+|   |   \-- services.js
+|   |-- hooks/
+|   |   \-- useAuth.js
+|   |-- lib/
+|   |   |-- emailjs.js
+|   |   |-- supabaseClient.js
+|   |   \-- whatsapp.js
+|   |-- pages/
+|   |   |-- About.jsx
+|   |   |-- Contact.jsx
+|   |   |-- FAQ.jsx
+|   |   |-- Home.jsx
+|   |   |-- NotFound.jsx
+|   |   |-- ProductDetail.jsx
+|   |   |-- ProjectDetail.jsx
+|   |   |-- Projects.jsx
+|   |   |-- RequestQuote.jsx
+|   |   |-- RequestRepair.jsx
+|   |   |-- ServiceDetail.jsx
+|   |   |-- Services.jsx
+|   |   \-- Shop.jsx
+|   |-- App.jsx
+|   |-- index.css
+|   \-- main.jsx
+|-- supabase/
+|   |-- rls_policies.sql
+|   |-- schema.sql
+|   \-- storage_policies.sql
+|-- .gitignore
+|-- index.html
+|-- package-lock.json
+|-- package.json
+|-- postcss.config.js
+|-- README.md
+|-- tailwind.config.js
+|-- THURSTECH_PERFORMANCE_CONTEXT.md
+|-- THURSTECH_PROJECT_TREE.txt
+\-- vite.config.js
+
+Excluded: node_modules/, .git/, dist/, build outputs/caches, .env, .env.*, and files with secret credentials.
