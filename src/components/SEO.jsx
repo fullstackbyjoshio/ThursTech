@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { business } from "../data/business";
 
-const SITE_URL = "https://www.thurstech.com.ng";
+const SITE_URL = "https://thurstech.vercel.app";
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 const DEFAULT_TITLE = "THURSTECH Nigeria Limited";
 
