@@ -1,7 +1,8 @@
 import { Helmet } from "react-helmet-async";
 
 const SITE_NAME = "THURSTECH Nigeria Limited";
-const DEFAULT_OG_IMAGE = "/og-image.jpg"; // replace with the real 1200x630 branded image
+const SITE_URL = "https://www.thurstech.com.ng";
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 
 /**
  * Per-page SEO tags: unique title/description, canonical URL, Open Graph and
@@ -9,8 +10,9 @@ const DEFAULT_OG_IMAGE = "/og-image.jpg"; // replace with the real 1200x630 bran
  * og:url are correct for that page, never the homepage.
  */
 export default function Seo({ title, description, path = "/", image, type = "website", schema }) {
-  const url = `https://www.thurstech.com.ng${path}`;
+  const url = `${SITE_URL}${path}`;
   const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
+  const imageUrl = image?.startsWith("http") ? image : new URL(image || DEFAULT_OG_IMAGE, SITE_URL).toString();
   const schemaJson = schema ? JSON.stringify(schema).replace(/</g, "\\u003c") : null;
 
   return (
@@ -24,12 +26,12 @@ export default function Seo({ title, description, path = "/", image, type = "web
       <meta property="og:description" content={description} />
       <meta property="og:url" content={url} />
       <meta property="og:site_name" content={SITE_NAME} />
-      <meta property="og:image" content={image || DEFAULT_OG_IMAGE} />
+      <meta property="og:image" content={imageUrl} />
 
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={image || DEFAULT_OG_IMAGE} />
+      <meta name="twitter:image" content={imageUrl} />
       {schemaJson && <script type="application/ld+json">{schemaJson}</script>}
     </Helmet>
   );

@@ -31,8 +31,8 @@ Netlify: Site Settings → Environment Variables):
 - Update the hardcoded domain (`https://www.thurstech.com.ng`) in
   `src/components/ui/Seo.jsx`, `public/sitemap.xml` and `public/robots.txt`
   once the real production domain is confirmed.
-- Replace `public/og-image.jpg` with a real 1200×630px branded social
-  sharing image (referenced by `Seo.jsx`).
-- Replace `public/favicon.svg` with the official THURSTECH logo mark once
-  supplied, without redrawing or altering it.
+- Verify `public/og-image.png` is the final branded social sharing image
+  referenced by the Open Graph and Twitter metadata.
+- The favicon package is installed. Add the official THURSTECH logo mark under
+  `public/webmark/` once supplied, without redrawing or altering it.
 - Set up Google Search Console and submit `sitemap.xml`.

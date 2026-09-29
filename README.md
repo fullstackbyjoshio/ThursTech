@@ -87,9 +87,9 @@ Projects, Testimonials and FAQs.
 
 ## Known gaps to close before launch
 
-- Replace the placeholder favicon/wordmark with the official THURSTECH logo
-  once supplied (do not redraw or recolor it).
-- Add a real 1200×630 Open Graph share image at `public/og-image.jpg`.
+- The favicon package is installed. Add the official THURSTECH wordmark under
+  `public/webmark/` once supplied (do not redraw or recolor it).
+- Verify `public/og-image.png` is the final branded social share image.
 - Swap the domain placeholder `www.thurstech.com.ng` for the real domain in
   `src/components/ui/Seo.jsx`, `public/sitemap.xml` and `public/robots.txt`.
 - Run the Supabase SQL files and create the first admin account.
