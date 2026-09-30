@@ -13,10 +13,15 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    const response = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
-    if (signInError) {
-      setError("Invalid email or password.");
+    if (response.error) {
+      console.error("Supabase sign-in response:", {
+        data: response.data,
+        error: response.error,
+        status: response.error.status ?? response.status ?? null,
+      });
+      setError(response.error.message);
       return;
     }
     navigate("/admin");

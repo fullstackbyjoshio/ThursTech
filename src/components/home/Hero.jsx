@@ -13,7 +13,7 @@ export default function Hero() {
             </p>
             <h1 className="flex flex-col">
               <ShutterText
-                words={["THURSTECH", "NIGERIA LIMITED", "RC: 7892341"]}
+                words={["THURSTECH", "NIGERIA LIMITED", "RC: 1577031"]}
                 intervalMs={3500}
                 accentColor="text-ice-400"
                 className="text-3xl font-black tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl"
